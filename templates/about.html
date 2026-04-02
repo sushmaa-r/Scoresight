@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="about-container">
+
+    <!-- HERO TITLE -->
+    <div class="about-hero">
+        <h1>⚽ League Predictor</h1>
+        <p>Where Football Meets Data</p>
+    </div>
+
+    <!-- CARDS -->
+    <div class="about-grid">
+
+        <div class="about-card">
+            <h2>🎯 Our Vision</h2>
+            <p>
+                To make <span class="highlight">data-driven football analysis</span> accessible to every fan.
+                Numbers tell the story behind every match — tactics, momentum, and moments that define champions.
+            </p>
+        </div>
+
+        <div class="about-card">
+            <h2>⚙️ Game Behind the Game</h2>
+            <p>
+                While players shine on the pitch, algorithms analyze form, tactics, and momentum —
+                uncovering deeper insights behind every scoreline.
+            </p>
+        </div>
+
+        <div class="about-card">
+            <h2>🧠 Technology & Intelligence</h2>
+            <p>
+                Built using <span class="highlight">machine learning</span>, Random Forest models, and
+                data visualization to turn raw stats into actionable insights.
+            </p>
+        </div>
+
+        <div class="about-card">
+            <h2>⚡ How It Works</h2>
+            <ol>
+                <li>Enter match stats (shots, goals, cards)</li>
+                <li>Model analyzes historical data</li>
+                <li>Get predictions with probabilities</li>
+            </ol>
+        </div>
+
+        <div class="about-card">
+            <h2>📊 Beyond Predictions</h2>
+            <p>
+                From expected goals to momentum shifts, every data point reveals
+                a deeper story of football.
+            </p>
+        </div>
+
+        <div class="about-card">
+            <h2>🔥 Competition & Growth</h2>
+            <p>
+                Inspired by the Premier League — evolving, competitive, and constantly improving.
+                Just like the model itself.
+            </p>
+        </div>
+
+    </div>
+
+</div>
+
+<style>
+
+/* CONTAINER */
+.about-container {
+    max-width: 1100px;
+    margin: auto;
+    padding: 60px 20px;
+    color: white;
+}
+
+/* HERO */
+.about-hero {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.about-hero h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.about-hero p {
+    color: rgba(255,255,255,0.7);
+    font-size: 1.2rem;
+}
+
+/* GRID */
+.about-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+}
+
+/* CARDS */
+.about-card {
+    background: rgba(255,255,255,0.08);
+    padding: 25px;
+    border-radius: 18px;
+    backdrop-filter: blur(10px);
+    transition: 0.3s;
+}
+
+.about-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 0 20px rgba(255,255,255,0.15);
+}
+
+.about-card h2 {
+    margin-bottom: 10px;
+    color: #ffca28;
+}
+
+/* LIST */
+.about-card ol {
+    padding-left: 20px;
+}
+
+/* HIGHLIGHT TEXT */
+.highlight {
+    color: #ffca28;
+    font-weight: 600;
+}
+
+/* RESPONSIVE */
+@media (max-width: 800px) {
+    .about-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+</style>
+
+{% endblock %}

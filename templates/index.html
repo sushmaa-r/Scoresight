@@ -1,0 +1,233 @@
+{% extends "base.html" %}
+{% block title %}Home | EPL Predictor{% endblock %}
+{% block content %}
+
+<div class="page-wrapper">
+
+    <!-- ✅ WELCOME -->
+    <div class="welcome-wrapper">
+        <h2>Welcome back, {{ current_user.username }} 👋</h2>
+        <p>Ready to predict today’s matches? ⚽</p>
+    </div>
+
+    <!-- ✅ MAIN CONTENT -->
+    <div class="content-row">
+
+        <!-- 🔥 HERO -->
+        <div class="hero-wrapper">
+
+            <div class="hero-left">
+                <h1>⚽ EPL Match Predictor</h1>
+                <p>
+                    Smart predictions, real-time insights,  
+                    and data-driven decisions for every match.
+                </p>
+
+                <a href="/halftime" class="hero-btn">Start Predicting</a>
+            </div>
+
+            <div class="hero-right">
+                <img src="{{ url_for('static', filename='bg.jpg.webp') }}">
+            </div>
+
+        </div>
+
+        <!-- ✅ CARDS -->
+        <div class="right-section">
+
+            <div class="feature-card"
+                 onclick="window.location.href='/match_insights'">
+                <h3>Match Insights</h3>
+                <p>View team stats, shots, goals, and possession trends.</p>
+                <a href="{{ url_for('match_insights') }}" class="btn-card">Check Now</a>
+            </div>
+
+            <div class="feature-card">
+                <h3>Upcoming Matches</h3>
+                <div class="match-logos">
+                    <img src="https://crests.football-data.org/66.svg" class="team-logo">
+                    <span>vs</span>
+                    <img src="https://crests.football-data.org/64.svg" class="team-logo">
+                </div>
+                <p>Check fixtures and upcoming matches.</p>
+                <a href="{{ url_for('get_matches') }}" class="btn-card">Check Now</a>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<style>
+
+/* PAGE STRUCTURE */
+.page-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* ✅ WELCOME */
+.welcome-wrapper {
+    text-align: center;
+    margin: 30px 0 50px;
+}
+
+.welcome-wrapper h2 {
+    color: white;
+    font-weight: 600;
+}
+
+.welcome-wrapper p {
+    color: rgba(255,255,255,0.7);
+}
+
+/* MAIN ROW */
+.content-row {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    width: 100%;
+    max-width: 1200px;
+}
+
+/* 🔥 HERO */
+.hero-wrapper {
+    flex: 2;
+    height: 320px;
+    display: flex;
+    border-radius: 25px;
+    overflow: hidden;
+    box-shadow: 0 0 40px rgba(128,0,255,0.3);
+}
+
+/* HERO LEFT */
+.hero-left {
+    flex: 1.2;
+    background: linear-gradient(135deg, #2b1055, #7b1fa2);
+    color: white;
+    padding: 50px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    /* 🔥 SMOOTH ANGLE */
+    clip-path: polygon(0 0, 88% 0, 96% 100%, 0% 100%);
+}
+
+.hero-left h1 {
+    font-size: 2.2rem;
+    margin-bottom: 15px;
+}
+
+.hero-left p {
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+}
+
+/* BUTTON */
+.hero-btn {
+    background: #ffca28;
+    color: #2b1055;
+    padding: 12px;
+    border-radius: 25px;
+    text-decoration: none;
+    width: 70%;
+    text-align: center;
+    font-weight: 600;
+}
+
+/* HERO RIGHT IMAGE */
+.hero-right {
+    flex: 1;
+}
+
+.hero-right img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* RIGHT SECTION */
+.right-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 320px;
+}
+
+/* CARDS */
+.feature-card {
+    background: rgba(255,255,255,0.12);
+    border-radius: 20px;
+    padding: 25px;
+    text-align: center;
+    color: white;
+    backdrop-filter: blur(10px);
+    transition: 0.3s;
+}
+
+.feature-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 0 25px rgba(255, 202, 40, 0.4);
+}
+
+.feature-card h3 {
+    color: #ffca28;
+}
+
+/* BUTTON */
+.btn-card {
+    margin-top: 10px;
+    display: inline-block;
+    background: #ffca28;
+    color: #2b1055;
+    padding: 8px 16px;
+    border-radius: 20px;
+    text-decoration: none;
+}
+
+/* LOGOS */
+.match-logos {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 10px 0;
+}
+
+.team-logo {
+    width: 40px;
+    height: 40px;
+    background: white;
+    border-radius: 50%;
+    padding: 5px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+    .content-row {
+        flex-direction: column;
+        padding: 0 20px;
+    }
+
+    .hero-wrapper {
+        height: auto;
+        flex-direction: column;
+    }
+
+    .hero-left {
+        clip-path: none;
+    }
+
+    .right-section {
+        height: auto;
+        gap: 20px;
+    }
+}
+
+</style>
+
+{% endblock %}

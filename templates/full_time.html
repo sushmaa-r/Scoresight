@@ -1,0 +1,226 @@
+{% extends "base.html" %}
+{% block title %}Full-Time Predictor | EPL Predictor{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-5">
+  <div class="row justify-content-center g-5">
+
+    <!-- ================= LEFT : FORM ================= -->
+    <div class="col-lg-5 col-md-12">
+      <h2 class="text-center mb-4 text-white"> Full-Time Predictor </h2>
+
+      <div class="form-card p-4 rounded-4 shadow-lg">
+        <form action="/fulltime" method="POST" class="text-center">
+
+          <!-- Match Date -->
+          <div class="mt-3 mb-4">
+            <label class="form-label fs-5">📅 Match Date</label>
+            <input type="date" name="match_date"
+                   class="form-control text-center w-50 mx-auto"
+                   value="{{ request.form.match_date if request.method=='POST' else '' }}"
+                   required>
+          </div>
+
+          <div class="teams-row d-flex justify-content-between align-items-start flex-wrap">
+
+            <!-- 🏠 Home -->
+            <div class="team-col">
+              <label class="form-label fs-5">🏠 Home Team</label>
+
+              <img id="homeLogoFT" src="/static/default_logo.svg"
+                   class="team-logo-ft" style="display:none;">
+
+              <select id="homeTeamFT" name="home_team"
+                      class="form-select text-center" required>
+                <option value="" disabled>Select Home Team</option>
+                {% for team in teams %}
+                  <option value="{{ team }}"
+                    {% if home_team == team %}selected{% endif %}>
+                    {{ team }}
+                  </option>
+                {% endfor %}
+              </select>
+
+              <label class="form-label mt-3">Half-Time Home Goals (HTHG)</label>
+              <input type="number" name="ht_home"
+                     class="form-control text-center"
+                     value="{{ ht_home if ht_home is defined else '' }}"
+                     required>
+            </div>
+
+            <!-- 🚩 Away -->
+            <div class="team-col">
+              <label class="form-label fs-5">🚩 Away Team</label>
+
+              <img id="awayLogoFT" src="/static/default_logo.svg"
+                   class="team-logo-ft" style="display:none;">
+
+              <select id="awayTeamFT" name="away_team"
+                      class="form-select text-center" required>
+                <option value="" disabled>Select Away Team</option>
+                {% for team in teams %}
+                  <option value="{{ team }}"
+                    {% if away_team == team %}selected{% endif %}>
+                    {{ team }}
+                  </option>
+                {% endfor %}
+              </select>
+
+              <label class="form-label mt-3">Half-Time Away Goals (HTAG)</label>
+              <input type="number" name="ht_away"
+                     class="form-control text-center"
+                     value="{{ ht_away if ht_away is defined else '' }}"
+                     required>
+            </div>
+          </div>
+
+          <div class="mt-4">
+            <button type="submit"
+                    class="btn btn-warning px-4 fw-semibold text-dark">
+              🔮 Predict Full-Time Result
+            </button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+
+    <!-- ================= RIGHT : RESULT ================= -->
+    {% if result %}
+    <div class="col-lg-5 col-md-12">
+
+      <h2 class="text-center mb-4 text-white">
+         Full-Time Prediction Result 
+      </h2>
+
+      <div class="card shadow-lg p-4"
+           style="border-radius:20px; background:rgba(255,255,255,0.1);">
+
+        <!-- Teams + Logos -->
+        <div class="d-flex justify-content-center align-items-center gap-4 mb-4 text-light">
+
+          <div class="text-center">
+            <img id="homeLogoResult" src="/static/default_logo.svg"
+                 class="team-logo-ft mb-2" style="display:none;">
+            <strong>{{ home_team }}</strong>
+            <div class="text-warning small"> {{ hthg }}</div>
+          </div>
+
+          <div class="fw-semibold fs-4">vs</div>
+
+          <div class="text-center">
+            <img id="awayLogoResult" src="/static/default_logo.svg"
+                 class="team-logo-ft mb-2" style="display:none;">
+            <strong>{{ away_team }}</strong>
+            <div class="text-warning small"> {{ htag }}</div>
+          </div>
+
+        </div>
+
+        <!-- Final Score -->
+        <h4 class="text-light text-center">Predicted Final Score</h4>
+        <h1 class="text-warning fw-bold text-center mb-3">
+          {{ ft_home }} - {{ ft_away }}
+        </h1>
+
+        <!-- Predicted Result + Logo -->
+        <div class="text-center mb-4">
+          <h5 class="text-white mb-3">Predicted Result</h5>
+
+          {% if result == "Draw" %}
+            <div class="d-flex justify-content-center align-items-center gap-3">
+              <img id="homeLogoResultSmall" src="/static/default_logo.svg"
+                   class="team-logo-result-small" style="display:none;">
+              <span class="fw-semibold text-warning fs-5">DRAW</span>
+              <img id="awayLogoResultSmall" src="/static/default_logo.svg"
+                   class="team-logo-result-small" style="display:none;">
+            </div>
+          {% elif "Home" in result %}
+            <div class="d-flex justify-content-center align-items-center gap-3">
+              <img id="homeLogoResultWin" src="/static/default_logo.svg"
+                   class="team-logo-result-small" style="display:none;">
+              <span class="fw-semibold text-warning fs-5">{{ home_team }} WIN</span>
+            </div>
+          {% elif "Away" in result %}
+            <div class="d-flex justify-content-center align-items-center gap-3">
+              <img id="awayLogoResultWin" src="/static/default_logo.svg"
+                   class="team-logo-result-small" style="display:none;">
+              <span class="fw-semibold text-warning fs-5">{{ away_team }} WIN</span>
+            </div>
+          {% endif %}
+        </div>
+
+        <!-- Probabilities -->
+        <div class="d-flex justify-content-center gap-4 mb-3 text-light">
+          <div>HOME {{ home_prob }}%</div>
+          <div>DRAW {{ draw_prob }}%</div>
+          <div>AWAY {{ away_prob }}%</div>
+        </div>
+
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+
+<!-- ================= LOGO SCRIPT ================= -->
+<script>
+async function fetchLogo(teamName) {
+  if (!teamName) return null;
+  const res = await fetch('/get_logo/' + encodeURIComponent(teamName));
+  if (!res.ok) return null;
+  const data = await res.json();
+  return data.logo;
+}
+
+function showLogoFT(id, url) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (url) {
+    el.src = url;
+    el.style.display = 'block';
+  } else {
+    el.style.display = 'none';
+  }
+}
+
+document.getElementById('homeTeamFT').addEventListener('change', async () => {
+  const logo = await fetchLogo(homeTeamFT.value);
+  showLogoFT('homeLogoFT', logo);
+  showLogoFT('homeLogoResult', logo);
+  showLogoFT('homeLogoResultWin', logo);
+  showLogoFT('homeLogoResultSmall', logo);
+});
+
+document.getElementById('awayTeamFT').addEventListener('change', async () => {
+  const logo = await fetchLogo(awayTeamFT.value);
+  showLogoFT('awayLogoFT', logo);
+  showLogoFT('awayLogoResult', logo);
+  showLogoFT('awayLogoResultWin', logo);
+  showLogoFT('awayLogoResultSmall', logo);
+});
+
+/* Load logos after POST */
+window.addEventListener('DOMContentLoaded', async () => {
+  const h = document.getElementById('homeTeamFT')?.value;
+  const a = document.getElementById('awayTeamFT')?.value;
+
+  if (h) {
+    const logo = await fetchLogo(h);
+    showLogoFT('homeLogoFT', logo);
+    showLogoFT('homeLogoResult', logo);
+    showLogoFT('homeLogoResultWin', logo);
+    showLogoFT('homeLogoResultSmall', logo);
+  }
+  if (a) {
+    const logo = await fetchLogo(a);
+    showLogoFT('awayLogoFT', logo);
+    showLogoFT('awayLogoResult', logo);
+    showLogoFT('awayLogoResultWin', logo);
+    showLogoFT('awayLogoResultSmall', logo);
+  }
+});
+</script>
+
+{% endblock %}

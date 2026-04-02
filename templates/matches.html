@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Premier League Matches{% endblock %}
+
+{% block content %}
+<div class="container mt-5 text-center">
+    <h1 class="mb-4">🏆 Premier League Matches</h1>
+
+    {% if matches %}
+        <div class="row justify-content-center">
+            {% for match in matches %}
+            <div class="col-md-4 mb-3">
+                <div class="card shadow-lg border-0 rounded-4 p-3">
+                    <h4>{{ match.homeTeam }} 🆚 {{ match.awayTeam }}</h4>
+                    <p><strong>Date:</strong> {{ match.utcDate }}</p>
+                    <p><strong>Status:</strong> {{ match.status }}</p>
+                    <p><strong>Score:</strong> {{ match.score }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No matches found at the moment.</p>
+    {% endif %}
+</div>
+{% endblock %}

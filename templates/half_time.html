@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+{% block title %}Half-Time Predictor | EPL Predictor{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+
+  <h2 class="text-center text-white mb-4">⏱️ Half-Time Predictor</h2>
+
+  <!-- MATCH DATE -->
+  <div class="text-center mb-4">
+    <label class="text-white fw-semibold mb-1">📅 Match Date</label>
+    <input type="date"
+           name="match_date"
+           form="htForm"
+           class="form-control mx-auto"
+           style="max-width:220px"
+           value="{{ match_date }}"
+           required>
+  </div>
+
+  <form id="htForm" method="POST">
+
+    <div class="row justify-content-center g-4">
+
+      <!-- ================= HOME ================= -->
+      <div class="col-lg-4">
+        <div class="card p-4">
+          <h5 class="text-center">🏠 Home Team</h5>
+
+          <!-- HOME LOGO -->
+          <img id="homeLogo" class="team-logo-ft mx-auto mb-3" style="display:none;">
+
+          <select id="homeTeam" name="home_team" class="form-select mb-3" required>
+            <option value="">Select Home Team</option>
+            {% for t in teams %}
+              <option value="{{ t }}" {% if home_team==t %}selected{% endif %}>{{ t }}</option>
+            {% endfor %}
+          </select>
+
+          <label class="stat-label">Shots (HS)</label>
+          <input name="HS" class="form-control mb-2" value="{{ HS }}">
+
+          <label class="stat-label">Shots on Target (HST)</label>
+          <input name="HST" class="form-control mb-2" value="{{ HST }}">
+
+          <label class="stat-label">Fouls (HF)</label>
+          <input name="HF" class="form-control mb-2" value="{{ HF }}">
+
+          <label class="stat-label">Corners (HC)</label>
+          <input name="HC" class="form-control mb-2" value="{{ HC }}">
+
+          <label class="stat-label">Yellow Cards (HY)</label>
+          <input name="HY" class="form-control mb-2" value="{{ HY }}">
+
+          <label class="stat-label">Red Cards (HR)</label>
+          <input name="HR" class="form-control" value="{{ HR }}">
+
+        </div>
+      </div>
+
+      <!-- ================= AWAY ================= -->
+      <div class="col-lg-4">
+        <div class="card p-4">
+          <h5 class="text-center">🚩 Away Team</h5>
+
+          <!-- AWAY LOGO -->
+          <img id="awayLogo" class="team-logo-ft mx-auto mb-3" style="display:none;">
+
+          <select id="awayTeam" name="away_team" class="form-select mb-3" required>
+            <option value="">Select Away Team</option>
+            {% for t in teams %}
+              <option value="{{ t }}" {% if away_team==t %}selected{% endif %}>{{ t }}</option>
+            {% endfor %}
+          </select>
+
+          <label class="stat-label">Shots (AS)</label>
+          <input name="AS" class="form-control mb-2" value="{{ AS }}">
+
+          <label class="stat-label">Shots on Target (AST)</label>
+          <input name="AST" class="form-control mb-2" value="{{ AST }}">
+
+          <label class="stat-label">Fouls (AF)</label>
+          <input name="AF" class="form-control mb-2" value="{{ AF }}">
+
+          <label class="stat-label">Corners (AC)</label>
+          <input name="AC" class="form-control mb-2" value="{{ AC }}">
+
+          <label class="stat-label">Yellow Cards (AY)</label>
+          <input name="AY" class="form-control mb-2" value="{{ AY }}">
+
+          <label class="stat-label">Red Cards (AR)</label>
+          <input name="AR" class="form-control" value="{{ AR }}">
+        </div>
+      </div>
+
+      <!-- ================= RESULT ================= -->
+      {% if result %}
+      <div class="col-lg-4">
+        <div class="card p-4 text-center">
+
+          <h5 class="mb-3">📊 Half-Time Result</h5>
+
+          <p class="fw-semibold">{{ home_team }} vs {{ away_team }}</p>
+
+          <h1 class="text-warning fw-bold mb-2">
+            {{ hthg }} - {{ htag }}
+          </h1>
+
+          <p class="mb-3">
+            Result: <strong>{{ result }}</strong>
+          </p>
+
+          <div class="text-start small mx-auto" style="max-width:200px">
+            <p>🏠 Home: {{ home_prob }}%</p>
+            <p>🤝 Draw: {{ draw_prob }}%</p>
+            <p>🚩 Away: {{ away_prob }}%</p>
+          </div>
+
+          <img src="{{ url_for('static', filename='half_pie.png') }}"
+               class="img-fluid rounded mt-3"
+               width="220">
+        </div>
+      </div>
+      {% endif %}
+
+    </div>
+
+    <div class="text-center mt-4">
+      <button class="btn btn-warning px-4 fw-semibold">
+        🔮 Predict Half-Time
+      </button>
+    </div>
+
+  </form>
+</div>
+
+<!-- ================= LOGO SCRIPT ================= -->
+<script>
+async function fetchLogo(team) {
+  if (!team) return null;
+  const res = await fetch(`/get_logo/${encodeURIComponent(team)}`);
+  if (!res.ok) return null;
+  const data = await res.json();
+  return data.logo;
+}
+
+async function setLogo(team, imgId) {
+  const img = document.getElementById(imgId);
+  if (!img) return;
+  const logo = await fetchLogo(team);
+  if (logo) {
+    img.src = logo;
+    img.style.display = "block";
+  } else {
+    img.style.display = "none";
+  }
+}
+
+document.getElementById("homeTeam")?.addEventListener("change", e => {
+  setLogo(e.target.value, "homeLogo");
+});
+
+document.getElementById("awayTeam")?.addEventListener("change", e => {
+  setLogo(e.target.value, "awayLogo");
+});
+
+window.addEventListener("DOMContentLoaded", () => {
+  setLogo("{{ home_team }}", "homeLogo");
+  setLogo("{{ away_team }}", "awayLogo");
+});
+</script>
+
+{% endblock %}

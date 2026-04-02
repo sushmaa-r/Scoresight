@@ -1,0 +1,12 @@
+venv/
+venv311/
+__pycache__/
+.env
+*.db
+
+Dataset of epl/
+models/
+static/team_logo/
+*.png
+*.webp
+*.svg

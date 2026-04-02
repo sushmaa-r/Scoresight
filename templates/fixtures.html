@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+{% block title %}Fixtures | EPL Predictor{% endblock %}
+
+{% block content %}
+<style>
+    .fixtures-container {
+        width: 100%;
+        max-width: 1000px;
+        margin: auto;
+        text-align: center;
+    }
+
+    h2 {
+        color: white;
+        margin-bottom: 10px;
+    }
+
+    .team-select {
+        margin: 20px 0;
+        padding: 10px;
+        font-size: 16px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    th, td {
+        padding: 14px;
+        border-bottom: 1px solid #ddd;
+        vertical-align: middle;
+    }
+
+    th {
+        background-color: #8e24aa;
+        color: white;
+        font-size: 16px;
+        text-transform: uppercase;
+    }
+
+    tr:hover {
+        background-color: rgba(255, 255, 255, 0.4);
+    }
+
+    /* ⚽ Match Card Style */
+    .match-cell {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .match-cell img {
+        width: 35px;
+        height: 35px;
+        object-fit: contain;
+        border-radius: 50%;
+        background: white;
+        padding: 3px;
+        box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .vs {
+        font-weight: bold;
+        color: #333;
+        background: rgba(255, 255, 255, 0.6);
+        padding: 4px 8px;
+        border-radius: 6px;
+    }
+
+    .logo-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 20px;
+        margin-top: 40px;
+        align-items: center;
+    }
+
+    .logo-item {
+        text-align: center;
+    }
+
+    .logo-item img {
+        width: 60px;
+        height: 60px;
+        object-fit: contain;
+    }
+
+    .logo-item p {
+        margin-top: 5px;
+        font-weight: 500;
+    }
+</style>
+
+<div class="fixtures-container">
+    <h2>📅 EPL Fixtures</h2>
+
+    <form method="GET" action="/fixtures">
+        <label for="team">Select a Team:</label>
+        <select id="team" name="team" class="team-select" onchange="this.form.submit()">
+            <option value="All Teams" {% if selected_team == 'All Teams' %}selected{% endif %}>All Teams</option>
+            {% for team in teams %}
+                <option value="{{ team }}" {% if team == selected_team %}selected{% endif %}>{{ team }}</option>
+            {% endfor %}
+        </select>
+    </form>
+
+    <h3>{{ 'Fixtures for ' + selected_team if selected_team != 'All Teams' else 'All Fixtures' }}</h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Match</th>
+                <th>Result</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for match in fixtures %}
+                <tr>
+                    <td>{{ match['Date'] }}</td>
+                    <td class="match-cell">
+                        {% if team_logos.get(match['HomeTeam']) %}
+                            <img src="{{ url_for('static', filename='team_logo/' + team_logos[match['HomeTeam']]) }}" alt="{{ match['HomeTeam'] }}">
+                        {% endif %}
+                        <span>{{ match['HomeTeam'] }}</span>
+                        <span class="vs">vs</span>
+                        <span>{{ match['AwayTeam'] }}</span>
+                        {% if team_logos.get(match['AwayTeam']) %}
+                            <img src="{{ url_for('static', filename='team_logo/' + team_logos[match['AwayTeam']]) }}" alt="{{ match['AwayTeam'] }}">
+                        {% endif %}
+                    </td>
+                    <td>{{ match['FTR'] }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h3>🏆 Teams & Logos</h3>
+    <div class="logo-grid">
+        {% for team, logo in team_logos.items() %}
+            <div class="logo-item">
+                {% if logo %}
+                    <img src="{{ url_for('static', filename='team_logo/' + logo) }}" alt="{{ team }}">
+                {% endif %}
+                <p>{{ team }}</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

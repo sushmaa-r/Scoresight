@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Match Insights | EPL Predictor{% endblock %}
+
+{% block content %}
+<div class="container mt-5 text-center">
+    <h2 class="text-primary mb-4">📊 Match Insights</h2>
+
+    <!-- Team Selection Form -->
+    <form action="/match_insights" method="get" class="mb-4">
+        <select name="team_name" class="form-select text-center" style="max-width: 300px; margin: 0 auto;">
+            {% for t in teams %}
+                <option value="{{ t }}" {% if team and t == team %}selected{% endif %}>{{ t }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-primary mt-3">View Insights</button>
+    </form>
+
+    <!-- Error Message -->
+    {% if error %}
+        <div class="alert alert-danger">{{ error }}</div>
+
+    <!-- Stats Display -->
+    {% elif stats %}
+        <div class="card shadow-lg p-4" style="border-radius: 20px; background: rgba(255,255,255,0.9);">
+            <h3 class="text-primary mb-3">{{ team }} — Season Insights ({{ stats.played }} Matches)</h3>
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="list-group text-start">
+                        <div class="list-group-item"><strong>Wins:</strong> {{ stats.wins }}</div>
+                        <div class="list-group-item"><strong>Draws:</strong> {{ stats.draws }}</div>
+                        <div class="list-group-item"><strong>Losses:</strong> {{ stats.losses }}</div>
+                        <div class="list-group-item"><strong>Goals For:</strong> {{ stats.goals_for }}</div>
+                        <div class="list-group-item"><strong>Goals Against:</strong> {{ stats.goals_against }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
