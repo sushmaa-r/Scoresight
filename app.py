@@ -94,10 +94,14 @@ def utc_to_ist(utc_time_str):
 # -------------------------------------------------------
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-rf_home = joblib.load(os.path.join(BASE_DIR, "models", "rf2_home.pkl"))
-rf_away = joblib.load(os.path.join(BASE_DIR, "models", "rf2_away.pkl"))
-
-print("✅ Models loaded successfully!")
+try:
+    rf_home = joblib.load(os.path.join(BASE_DIR, "models", "rf2_home.pkl"))
+    rf_away = joblib.load(os.path.join(BASE_DIR, "models", "rf2_away.pkl"))
+    print("✅ Models loaded successfully!")
+except Exception as e:
+    print("⚠️ Models not found, running without ML:", e)
+    rf_home = None
+    rf_away = None
 
 # -------------------------------------------------------
 # TEAM LIST
@@ -284,6 +288,9 @@ def halftime():
 
             features = np.array(features).reshape(1, -1)
 
+            if rf_home is None or rf_away is None:
+                return render_template("half_time.html", error="⚠️ Model not available in deployed version")
+
             home_goals = rf_home.predict(features)[0]
             away_goals = rf_away.predict(features)[0]
 
@@ -362,6 +369,9 @@ def fulltime():
             features = np.array(features).reshape(1, -1)
 
             # --------- MODEL PREDICTION ----------
+            if rf_home is None or rf_away is None:
+                flash("⚠️ Model not available in deployed version", "warning")
+                return render_template("full_time.html", **context)
             ft_home_pred = rf_home.predict(features)[0]
             ft_away_pred = rf_away.predict(features)[0]
 
@@ -404,8 +414,10 @@ def fulltime():
 # -------------------------------------------------------
 # FIXTURES
 # -------------------------------------------------------
-DATA_PATH = r"C:\Users\sushm\OneDrive\Desktop\Scoresight\Dataset of epl\EPL_features.csv"
-LOGO_PATH = r"C:\Users\sushm\OneDrive\Desktop\Scoresight\static\team_logo"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+DATA_PATH = os.path.join(BASE_DIR, "Dataset of epl", "EPL_features.csv")
+LOGO_PATH = os.path.join(BASE_DIR, "static", "team_logo")
 
 TEAM_NAME_MAP = {
     "man city": "Manchester City",
@@ -423,7 +435,12 @@ TEAM_NAME_MAP = {
 @app.route('/fixtures')
 @login_required
 def fixtures_page():
-    df = pd.read_csv(DATA_PATH, parse_dates=['Date'])
+    try:
+        df = pd.read_csv(DATA_PATH, parse_dates=['Date'])
+    except Exception as e:
+        print("⚠️ Dataset not found:", e)
+        return "⚠️ Dataset not available in deployed version"   
+    
     df['HomeTeam'] = df['HomeTeam'].apply(lambda x: TEAM_NAME_MAP.get(str(x).lower(), x))
     df['AwayTeam'] = df['AwayTeam'].apply(lambda x: TEAM_NAME_MAP.get(str(x).lower(), x))
 
@@ -438,14 +455,18 @@ def fixtures_page():
     df_filtered['Date'] = df_filtered['Date'].dt.strftime('%Y-%m-%d')
 
     team_logos = {}
+
     for team in teams_sorted:
         team_lower = team.replace(" ", "").lower()
         found = None
-        for file in os.listdir(LOGO_PATH):
-            file_lower = file.replace(" ", "").replace("_", "").lower()
-            if team_lower in file_lower:
-                found = file
-                break
+
+        if os.path.exists(LOGO_PATH):
+            for file in os.listdir(LOGO_PATH):
+                file_lower = file.replace(" ", "").replace("_", "").lower()
+                if team_lower in file_lower:
+                    found = file
+                    break
+
         team_logos[team] = found
 
     return render_template("fixtures.html", teams=teams_sorted, selected_team=selected_team,
