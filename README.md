@@ -14,7 +14,24 @@ AI-driven Premier League prediction web app using Flask, Machine Learning, and r
 - 📰 EPL News Integration
 
 ---
+## 📸 Screenshots
 
+### 🏠 Dashboard
+![Scoresight Dashboard](screenshots/dashboard.png)
+
+### 🤖 Full-Time Match Prediction
+![Full-Time Prediction](screenshots/prediction.png)
+
+### 🧠 AI Chat Assistant
+![AI Chat Assistant](screenshots/ai-chat.png)
+
+### ⚽ EPL Fixtures
+![EPL Fixtures](screenshots/fixtures.png)
+
+### 📰 EPL News
+![EPL News](screenshots/news.png)
+
+---
 ## 🧠 Tech Stack
 
 - Python
